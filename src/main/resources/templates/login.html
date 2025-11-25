@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-shield-alt"></i> Admin Panel</h2>
+            <p>Courier Management</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="/managestaff"><i class="fas fa-users-cog"></i> Manage Staff</a></li>
+            <li><a href="#" id="updateCostLink"><i class="fas fa-dollar-sign"></i> Update Cost</a></li>
+            <li><a href="/statistics"><i class="fas fa-chart-bar"></i> Statistics</a></li>
+            <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <div class="top-header">
+            <div class="header-title">
+                <h1>Admin Dashboard</h1>
+            </div>
+            <div class="header-actions">
+                <div class="user-info">
+                    <div class="user-avatar">A</div>
+                    <span style="font-weight: 600;">Admin</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Container -->
+        <div class="content-container">
+            <!-- Dashboard Cards -->
+            <div class="dashboard-cards">
+                <div class="card stat-card">
+                    <div class="stat-info">
+                        <h3>Staff</h3>
+                        <p>Manage Team</p>
+                    </div>
+                    <div class="stat-icon blue">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="stat-info">
+                        <h3>Pricing</h3>
+                        <p>Update Costs</p>
+                    </div>
+                    <div class="stat-icon green">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="stat-info">
+                        <h3>Deliveries</h3>
+                        <p>Track Status</p>
+                    </div>
+                    <div class="stat-icon orange">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="stat-info">
+                        <h3>Reports</h3>
+                        <p>View Analytics</p>
+                    </div>
+                    <div class="stat-icon red">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Update Cost Form (Hidden by default) -->
+            <div id="updateCostForm" style="display: none;">
+                <div class="form-container">
+                    <h2 style="margin-bottom: 20px; color: var(--primary-color);">
+                        <i class="fas fa-dollar-sign"></i> Update Cost Per Kg
+                    </h2>
+                    <form id="updateCostFormSubmit">
+                        <div class="form-group">
+                            <label for="costInput">
+                                <i class="fas fa-money-bill-wave"></i> Enter Updated Cost (per kg)
+                            </label>
+                            <input type="text" id="costInput" name="cost" class="form-control" 
+                                   placeholder="Enter new cost per kg" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-check"></i> Update Cost
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("updateCostLink").addEventListener("click", function(event) {
+            event.preventDefault();
+            var updateCostForm = document.getElementById("updateCostForm");
+            if (updateCostForm.style.display === "none") {
+                updateCostForm.style.display = "block";
+            } else {
+                updateCostForm.style.display = "none";
+            }
+        });
+
+        document.getElementById("updateCostFormSubmit").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var cost = document.getElementById("costInput").value;
+            localStorage.setItem('newCost', cost);
+            
+            // Show success message
+            var formContainer = document.querySelector('.form-container');
+            var successMsg = document.createElement('div');
+            successMsg.className = 'alert alert-success';
+            successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Cost updated successfully to ₹' + cost + ' per kg';
+            formContainer.appendChild(successMsg);
+            
+            // Hide after 3 seconds
+            setTimeout(function() {
+                updateCostForm.style.display = 'none';
+                successMsg.remove();
+                document.getElementById("costInput").value = '';
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

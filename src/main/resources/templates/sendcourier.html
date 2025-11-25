@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Courier</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-user-circle"></i> Customer</h2>
+            <p>Courier Dashboard</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/cuslogin"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="/sendcourier" class="active"><i class="fas fa-paper-plane"></i> Send Courier</a></li>
+            <li><a href="/enterTrackingNumber"><i class="fas fa-search-location"></i> Track Courier</a></li>
+            <li><a href="/enterfullname"><i class="fas fa-history"></i> Booking History</a></li>
+            <li><a href="/statistics"><i class="fas fa-chart-line"></i> My Statistics</a></li>
+            <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <div class="top-header">
+            <div class="header-title">
+                <h1><i class="fas fa-paper-plane"></i> Send Courier</h1>
+            </div>
+            <div class="header-actions">
+                <div class="user-info">
+                    <div class="user-avatar">C</div>
+                    <span style="font-weight: 600;">Customer</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Container -->
+        <div class="content-container">
+            <div class="form-container" style="max-width: 700px;">
+                <h2 style="margin-bottom: 25px; text-align: center; color: var(--primary-color);">
+                    <i class="fas fa-box"></i> New Courier Booking
+                </h2>
+                
+                <form action="/submitCourier" method="post">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label for="fromName">
+                                <i class="fas fa-user"></i> From Name
+                            </label>
+                            <input type="text" id="fromName" name="fromName" class="form-control" placeholder="Your name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pickupCity">
+                                <i class="fas fa-city"></i> Pickup City
+                            </label>
+                            <select id="pickupCity" name="pickupCity" class="form-control" required>
+                                <option value="">Select City</option>
+                                <option value="Bangalore">Bangalore</option>
+                                <option value="Delhi">Delhi</option>
+                                <option value="Hyderabad">Hyderabad</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pickupAddress">
+                            <i class="fas fa-map-marker-alt"></i> Pickup Address
+                        </label>
+                        <input type="text" id="pickupAddress" name="pickupAddress" class="form-control" placeholder="Full pickup address" required>
+                    </div>
+
+                    <div style="border-top: 2px solid var(--border-color); margin: 25px 0; padding-top: 25px;">
+                        <h3 style="color: var(--text-secondary); font-size: 16px; margin-bottom: 20px;">
+                            <i class="fas fa-shipping-fast"></i> Recipient Details
+                        </h3>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label for="toName">
+                                    <i class="fas fa-user-tag"></i> Recipient Name
+                                </label>
+                                <input type="text" id="toName" name="toName" class="form-control" placeholder="Recipient's name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="toMobile">
+                                    <i class="fas fa-mobile-alt"></i> Recipient Mobile
+                                </label>
+                                <input type="text" id="toMobile" name="toMobile" class="form-control" placeholder="Mobile number" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="destinationAddress">
+                                <i class="fas fa-location-arrow"></i> Destination Address
+                            </label>
+                            <input type="text" id="destinationAddress" name="destinationAddress" class="form-control" placeholder="Full delivery address" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="destinationCity">
+                                <i class="fas fa-city"></i> Destination City
+                            </label>
+                            <select id="destinationCity" name="destinationCity" class="form-control" required>
+                                <option value="">Select City</option>
+                                <option value="Bangalore">Bangalore</option>
+                                <option value="Delhi">Delhi</option>
+                                <option value="Hyderabad">Hyderabad</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 2px solid var(--border-color); margin: 25px 0; padding-top: 25px;">
+                        <h3 style="color: var(--text-secondary); font-size: 16px; margin-bottom: 20px;">
+                            <i class="fas fa-calculator"></i> Pricing & Payment
+                        </h3>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label for="weight">
+                                    <i class="fas fa-weight"></i> Weight (kg)
+                                </label>
+                                <input type="text" id="weight" name="weight" class="form-control" placeholder="Package weight" required onchange="calculateTotalCost()">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="totalCostDisplay">
+                                    <i class="fas fa-rupee-sign"></i> Total Cost
+                                </label>
+                                <input type="text" id="totalCostDisplay" class="form-control" placeholder="Auto-calculated" readonly style="background-color: var(--light-color);">
+                                <input type="hidden" id="totalCost" name="totalCost">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="paymentMethod">
+                                <i class="fas fa-credit-card"></i> Payment Method
+                            </label>
+                            <select id="paymentMethod" name="paymentMethod" class="form-control" required>
+                                <option value="">Select Payment Method</option>
+                                <option value="card">Card</option>
+                                <option value="netbanking">NetBanking</option>
+                                <option value="cash">Cash</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 16px;">
+                        <i class="fas fa-check-circle"></i> Book Courier
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var newCost = localStorage.getItem('newCost') || 50;
+        function calculateTotalCost() {
+            var weight = parseFloat(document.getElementById('weight').value);
+            if (!isNaN(weight)) {
+                var totalCost = weight * newCost;
+                // Display formatted value with currency symbol
+                document.getElementById('totalCostDisplay').value = '₹' + totalCost.toFixed(2);
+                // Store numeric value for form submission
+                document.getElementById('totalCost').value = totalCost.toFixed(2);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Courier</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-user-circle"></i> Customer</h2>
+            <p>Courier Dashboard</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/cuslogin"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="/sendcourier"><i class="fas fa-paper-plane"></i> Send Courier</a></li>
+            <li><a href="/enterTrackingNumber" class="active"><i class="fas fa-search-location"></i> Track Courier</a></li>
+            <li><a href="/enterfullname"><i class="fas fa-history"></i> Booking History</a></li>
+            <li><a href="/statistics"><i class="fas fa-chart-line"></i> My Statistics</a></li>
+            <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <div class="top-header">
+            <div class="header-title">
+                <h1><i class="fas fa-search-location"></i> Track Courier</h1>
+            </div>
+            <div class="header-actions">
+                <div class="user-info">
+                    <div class="user-avatar">C</div>
+                    <span style="font-weight: 600;">Customer</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Container -->
+        <div class="content-container">
+            <div class="form-container" style="max-width: 500px;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div class="stat-icon blue" style="margin: 0 auto 20px;">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h2 style="color: var(--primary-color);">Track Your Shipment</h2>
+                    <p style="color: var(--text-secondary); margin-top: 10px;">
+                        Enter your tracking number to see real-time courier status
+                    </p>
+                </div>
+                
+                <form action="/checkStatus" method="get">
+                    <div class="form-group">
+                        <label for="trackingNumber">
+                            <i class="fas fa-barcode"></i> Tracking Number
+                        </label>
+                        <input type="text" id="trackingNumber" name="trackingNumber" 
+                               class="form-control" placeholder="Enter 6-digit tracking number" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">
+                        <i class="fas fa-search"></i> Track Courier
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

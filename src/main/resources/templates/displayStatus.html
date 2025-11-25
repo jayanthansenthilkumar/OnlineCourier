@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courier Status</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-user-circle"></i> Customer</h2>
+            <p>Courier Dashboard</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/cuslogin"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="/sendcourier"><i class="fas fa-paper-plane"></i> Send Courier</a></li>
+            <li><a href="/enterTrackingNumber" class="active"><i class="fas fa-search-location"></i> Track Courier</a></li>
+            <li><a href="/enterfullname"><i class="fas fa-history"></i> Booking History</a></li>
+            <li><a href="/home"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <div class="top-header">
+            <div class="header-title">
+                <h1><i class="fas fa-info-circle"></i> Courier Status</h1>
+            </div>
+            <div class="header-actions">
+                <div class="user-info">
+                    <div class="user-avatar">C</div>
+                    <span style="font-weight: 600;">Customer</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Container -->
+        <div class="content-container">
+            <div class="card" style="max-width: 600px; margin: 0 auto; padding: 40px; text-align: center;">
+                <div class="stat-icon green" style="margin: 0 auto 30px;">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                
+                <h2 style="color: var(--primary-color); margin-bottom: 20px;">
+                    Courier Status
+                </h2>
+                
+                <div style="padding: 20px; background: var(--light-color); border-radius: 8px; margin-bottom: 20px;">
+                    <p style="font-size: 18px; color: var(--text-secondary); margin-bottom: 10px;">Current Status:</p>
+                    <h3 style="color: var(--success-color); font-size: 24px;" th:text="${status}">Status</h3>
+                </div>
+                
+                <p style="color: var(--text-secondary); font-size: 16px;">
+                    Your courier status is <strong th:text="${status}">status</strong>. Thank you for using our service.
+                </p>
+                
+                <a href="/enterTrackingNumber" class="btn btn-primary" style="margin-top: 20px;">
+                    <i class="fas fa-search"></i> Track Another Courier
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

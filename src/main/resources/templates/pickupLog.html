@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pickup Log</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-users"></i> Staff Panel</h2>
+            <p>Operations Dashboard</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/stafflogin"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="/pickupLog" class="active"><i class="fas fa-box"></i> Pickup Log</a></li>
+            <li><a href="/deliverLog"><i class="fas fa-truck"></i> Delivery Log</a></li>
+            <li><a href="/statistics"><i class="fas fa-chart-bar"></i> Statistics</a></li>
+            <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <div class="top-header">
+            <div class="header-title">
+                <h1><i class="fas fa-box"></i> Pickup Log</h1>
+            </div>
+            <div class="header-actions">
+                <div class="user-info">
+                    <div class="user-avatar">S</div>
+                    <span style="font-weight: 600;">Staff</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Container -->
+        <div class="content-container">
+            <div class="table-container">
+                <div class="table-header">
+                    <h2><i class="fas fa-list"></i> Pending Pickups</h2>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-barcode"></i> Tracking Number</th>
+                            <th><i class="fas fa-map-marker-alt"></i> Pickup Address</th>
+                            <th><i class="fas fa-city"></i> Pickup City</th>
+                            <th><i class="fas fa-cog"></i> Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="courierDetail : ${courierDetailsList}">
+                            <td>
+                                <span class="badge badge-info" th:text="${courierDetail.trackingNumber}">Tracking Number</span>
+                            </td>
+                            <td th:text="${courierDetail.pickupAddress}">Pickup Address</td>
+                            <td th:text="${courierDetail.pickupCity}">Pickup City</td>
+                            <td>
+                                <form action="/pickup" method="post" style="display: inline;">
+                                    <input type="hidden" name="trackingNumber" th:value="${courierDetail.trackingNumber}">
+                                    <button type="submit" class="btn btn-success btn-sm" onclick="handlePickup(event)">
+                                        <i class="fas fa-check"></i> Complete Pickup
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function handlePickup(event) {
+            event.preventDefault();
+            var row = event.target.closest('tr');
+            var formData = new FormData(event.target.closest('form'));
+            fetch('/pickup', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    row.parentNode.removeChild(row);
+                    // Show success message
+                    var successMsg = document.createElement('div');
+                    successMsg.className = 'alert alert-success';
+                    successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Pickup completed successfully!';
+                    successMsg.style.position = 'fixed';
+                    successMsg.style.top = '20px';
+                    successMsg.style.right = '20px';
+                    successMsg.style.zIndex = '9999';
+                    document.body.appendChild(successMsg);
+                    setTimeout(() => successMsg.remove(), 3000);
+                } else {
+                    alert('Error occurred while picking up the courier.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error occurred while picking up the courier.');
+            });
+        }
+    </script>
+</body>
+</html>

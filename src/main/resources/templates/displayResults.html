@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking History Results</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-user-circle"></i> Customer</h2>
+            <p>Courier Dashboard</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/cuslogin"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="/sendcourier"><i class="fas fa-paper-plane"></i> Send Courier</a></li>
+            <li><a href="/enterTrackingNumber"><i class="fas fa-search-location"></i> Track Courier</a></li>
+            <li><a href="/enterfullname" class="active"><i class="fas fa-history"></i> Booking History</a></li>
+            <li><a href="/home"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <div class="top-header">
+            <div class="header-title">
+                <h1><i class="fas fa-history"></i> Your Previous Bookings</h1>
+            </div>
+            <div class="header-actions">
+                <div class="user-info">
+                    <div class="user-avatar">C</div>
+                    <span style="font-weight: 600;">Customer</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Container -->
+        <div class="content-container">
+            <div class="table-container">
+                <div class="table-header">
+                    <h2><i class="fas fa-list"></i> Booking History</h2>
+                    <a href="/enterfullname" class="btn btn-primary btn-sm">
+                        <i class="fas fa-search"></i> New Search
+                    </a>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-barcode"></i> Tracking Number</th>
+                            <th><i class="fas fa-map-marker-alt"></i> Pickup Address</th>
+                            <th><i class="fas fa-city"></i> Pickup City</th>
+                            <th><i class="fas fa-city"></i> Destination City</th>
+                            <th><i class="fas fa-user"></i> Recipient</th>
+                            <th><i class="fas fa-rupee-sign"></i> Total Cost</th>
+                            <th><i class="fas fa-info-circle"></i> Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="courierDetail : ${courierDetailsList}">
+                            <td>
+                                <span class="badge badge-info" th:text="${courierDetail.trackingNumber}">Tracking Number</span>
+                            </td>
+                            <td th:text="${courierDetail.pickupAddress}">Pickup Address</td>
+                            <td th:text="${courierDetail.pickupCity}">Pickup City</td>
+                            <td th:text="${courierDetail.destinationCity}">Destination City</td>
+                            <td th:text="${courierDetail.toName}">To Name</td>
+                            <td>₹<span th:text="${courierDetail.totalCost}">Total Cost</span></td>
+                            <td>
+                                <span class="badge badge-success" th:if="${courierDetail.status == 'Delivered'}" th:text="${courierDetail.status}">Status</span>
+                                <span class="badge badge-warning" th:if="${courierDetail.status == 'In Transit'}" th:text="${courierDetail.status}">Status</span>
+                                <span class="badge badge-info" th:if="${courierDetail.status == 'Booked'}" th:text="${courierDetail.status}">Status</span>
+                                <span class="badge badge-danger" th:if="${courierDetail.status != 'Delivered' && courierDetail.status != 'In Transit' && courierDetail.status != 'Booked'}" th:text="${courierDetail.status}">Status</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
