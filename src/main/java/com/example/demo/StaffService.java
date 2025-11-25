@@ -1,6 +1,5 @@
 package com.example.demo;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,16 @@ public class StaffService {
 
     public void saveStaff(Staff staff) {
         staffRepository.save(staff);
-
     }
 
+    public boolean validateStaffLogin(String username, String password) {
+        username = username.trim();
+        password = password.trim();
+        Staff staff = staffRepository.findByUsername(username);
+        return staff != null && staff.getPassword().equals(password);
+    }
+
+    public Staff findByUsername(String username) {
+        return staffRepository.findByUsername(username);
+    }
 }

@@ -27,37 +27,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpServletRequest;
 
-//below mwntioned class will be the controller class
-@Controller // only for web projects, uses MVC
-
-// @RestController is for access other web projects(distributable)-allows
-// application to application interaction & doesnt use MVC
+@Controller
 public class CourierController {
-    private CourierController() {
-    }
 
-    // Singleton instance of CourierController
-    private static CourierController instance = null;
-
-    // Get method to retrieve the singleton instance
-    public static CourierController getInstance() {
-        if (instance == null) {
-            synchronized (CourierController.class) {
-                if (instance == null) {
-                    instance = new CourierController();
-                }
-            }
-        }
-        return instance;
-    }
-    // @RequestMapping:- general-purpose annotation ,that can map a request to any
-    // HTTP method (GET, POST, etc.).
-    // the specific HTTP method can be explicitly mentioned: @RequestMapping(value =
-    // "/users", method = RequestMethod.GET)
-
-    @GetMapping(value = "/home") // HTTP GET METHOD
+    @GetMapping(value = "/home")
     public String home(Model model) {
-        System.out.println("Homepg");
         return "home";
     }
 
@@ -67,8 +41,6 @@ public class CourierController {
         return "login";
     }
 
-    // below mentioned are models(MVC) that are injected through @Autowired
-    // ;implicitly follow setter injection
     @Autowired
     private AdminService adminService;
     @Autowired
@@ -90,7 +62,6 @@ public class CourierController {
 
     @GetMapping("/customer")
     public String cusPage(User user, Model model) {
-        System.out.println("customerpg");
         model.addAttribute("user", new User());
         return "customer";
     }
@@ -129,39 +100,56 @@ public class CourierController {
         }
     }
 
-    @PostMapping("/stafflogin") // HTTP POST METHOD
-    public String processStaffForm(@RequestParam String name,
-            // @RequestParam String username,
+    @PostMapping("/stafflogin")
+    public String processStaffLogin(@RequestParam String username,
+            @RequestParam String password,
+            Model model,
+            HttpSession session) {
+        boolean isValid = staffService.validateStaffLogin(username, password);
+        if (isValid) {
+            Staff staff = staffService.findByUsername(username);
+            session.setAttribute("user", staff.getName());
+            session.setAttribute("username", username);
+            session.setAttribute("userType", "staff");
+            session.setAttribute("location", staff.getLocation());
+            session.setMaxInactiveInterval(1800);
+            return "redirect:/stafflogin";
+        } else {
+            model.addAttribute("error", "Invalid username or password");
+            return "staff";
+        }
+    }
+
+    @PostMapping("/registerstaff")
+    public String registerStaff(@RequestParam String name,
+            @RequestParam String username,
             @RequestParam String password,
             @RequestParam String location,
             HttpSession session) {
         Staff staff = new Staff();
         staff.setName(name);
-        // staff.setUsername(username);
+        staff.setUsername(username);
         staff.setPassword(password);
         staff.setLocation(location);
-
         staffService.saveStaff(staff);
         
-        // Create session
         session.setAttribute("user", name);
+        session.setAttribute("username", username);
         session.setAttribute("userType", "staff");
         session.setAttribute("location", location);
-        session.setMaxInactiveInterval(1800); // 30 minutes
-
+        session.setMaxInactiveInterval(1800);
         return "redirect:/stafflogin";
     }
 
     @GetMapping("/managestaff")
     public String manageStaff(Staffuser user, Model model) {
         List<Staff> staffList = staffRepository.findAll();
-        System.out.println(staffList);
         model.addAttribute("staffList", staffList);
         return "managestaff";
     }
 
     @PostMapping("/removestaff")
-    public String removeStaff(@RequestParam String id) {
+    public String removeStaff(@RequestParam Long id) {
         staffRepository.deleteById(id);
         return "redirect:/managestaff";
     }
@@ -184,7 +172,7 @@ public class CourierController {
 
     @GetMapping("/sendcourier")
     public String sendCourierPage() {
-        return "sendcourier"; // Return the sendCourier.html page
+        return "sendcourier";
     }
 
     @PostMapping("/submitCourier")
@@ -223,26 +211,17 @@ public class CourierController {
         courierDetails.setTrackingNumber(trackingNumber);
         courierDetails.setStatus("Booked");
 
-        // Call installCourier method to save the courier details
-        ResponseEntity<CourierDetails> response = installCourier(courierDetails);
+        installCourier(courierDetails);
 
-        // Return the image bytes as ResponseEntity
         return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
     }
-    // @PutMapping-HTTP PUT METHOD(UPDATE OBJECTS)
-    // @PatchMapping-HTTP PATCH METHOD ,PATCH: Used to partially update resources
-    // (sending only the fields that need to be updated).
-
     @PostMapping("/installCourier")
     public ResponseEntity<CourierDetails> installCourier(@RequestBody CourierDetails courierDetails) {
-        // Save courier details to the database
         CourierDetails savedCourier = courierdetailRepository.save(courierDetails);
-
         return ResponseEntity.ok(savedCourier);
     }
 
     private String generateTrackingNumber() {
-        // Generate a random 6-digit tracking number
         Random random = new Random();
         int trackingNumber = 100000 + random.nextInt(900000);
         return String.valueOf(trackingNumber);
@@ -252,21 +231,17 @@ public class CourierController {
             String paymentMethod, String toName,
             String toMobile, String destinationAddress, String destinationCity, double weight, double totalCost,
             String trackingNumber) {
-        // Create a new BufferedImage
         int width = 600;
         int height = 400;
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = image.createGraphics();
 
-        // Set background color
         g2d.setColor(Color.WHITE);
         g2d.fillRect(0, 0, width, height);
 
-        // Set font and color for text
         g2d.setColor(Color.BLACK);
         g2d.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        // Draw text on the image
         int x = 50;
         int y = 50;
         g2d.drawString("Courier Receipt", x, y);
@@ -294,14 +269,13 @@ public class CourierController {
         g2d.drawString("Tracking Number: " + trackingNumber, x, y);
         y += 20;
         g2d.drawString("Status: " + "Booked", x, y);
-        // Dispose graphics
+        
         g2d.dispose();
 
         return image;
     }
 
     private byte[] convertImageToByteArray(BufferedImage image) {
-        // Convert BufferedImage to byte array
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             ImageIO.write(image, "png", baos);
@@ -313,51 +287,39 @@ public class CourierController {
 
     @GetMapping("/pickupLog")
     public String pickupLog(Model model) {
-        // Fetch data from the database
         List<CourierDetails> courierDetailsList = courierdetailRepository.findAll();
-
-        // Add the fetched data to the model
         model.addAttribute("courierDetailsList", courierDetailsList);
-
-        // Return the pickupLog.html page
         return "pickupLog";
     }
 
     @GetMapping("/enterTrackingNumber")
     public String enterTrackingNumberPage() {
-        return "enterTrackingNumber"; //
+        return "enterTrackingNumber";
     }
 
     @GetMapping("/enterfullname")
     public String enterfullnamePage() {
-        return "enterfullname"; //
+        return "enterfullname";
     }
 
     @GetMapping("/deliverLog")
     public String deliverlogPage(Model model) {
         List<DeliverLog> deliverLogs = deliverlogRepository.findAll();
-
-        // Add the fetched data to the model
         model.addAttribute("deliverLogs", deliverLogs);
-        return "deliverLog"; //
+        return "deliverLog";
     }
 
     @GetMapping("/checkStatus")
     public String checkStatus(@RequestParam String trackingNumber, Model model) {
-        // Fetch courier details from the database based on tracking number
         Optional<CourierDetails> optionalCourier = courierdetailRepository.findByTrackingNumber(trackingNumber);
 
-        // Check if courier details exist
         if (optionalCourier.isPresent()) {
             CourierDetails courier = optionalCourier.get();
-            // Get the status from the fetched courier details
             String status = courier.getStatus();
             model.addAttribute("status", status);
         } else {
-            // If courier details not found, set status as "Not Found"
             model.addAttribute("status", "Not Found");
         }
-        // Return the HTML page for displaying status
         return "displayStatus";
     }
 
@@ -366,10 +328,7 @@ public class CourierController {
         CourierDetails courierDetails = courierdetailRepository.findByTrackingNumber(trackingNumber).orElse(null);
         if (courierDetails != null) {
             courierDetails.setStatus("Picked");
-
             courierdetailRepository.save(courierDetails);
-            // return "Courier with tracking number " + courierDetails.getTrackingNumber() +
-            // " has been picked.";
             deliverlogRepository.save(new DeliverLog(courierDetails.getTrackingNumber(),
                     courierDetails.getToName(), courierDetails.getDestinationAddress(),
                     courierDetails.getDestinationCity()));
@@ -393,10 +352,8 @@ public class CourierController {
     public String searchByName(@RequestParam String fromName, Model model) {
         List<CourierDetails> courierDetailsList = courierdetailRepository.findByFromName(fromName);
         model.addAttribute("courierDetailsList", courierDetailsList);
-        return "displayResults"; // Create a new HTML template to display the search results
+        return "displayResults";
     }
-    
-    // ==================== NEW FUNCTIONALITIES ====================
     
     @GetMapping("/logout")
     public String logout(HttpSession session) {
@@ -419,11 +376,9 @@ public class CourierController {
     
     @GetMapping("/statistics")
     public String getStatistics(Model model, HttpSession session) {
-        // Get user type from session
         String userType = (String) session.getAttribute("userType");
         
         if ("admin".equals(userType)) {
-            // Admin statistics
             long totalCouriers = courierdetailRepository.count();
             long bookedCouriers = courierdetailRepository.findByStatus("Booked").size();
             long pickedCouriers = courierdetailRepository.findByStatus("Picked").size();
@@ -438,7 +393,6 @@ public class CourierController {
             
             return "adminStatistics";
         } else if ("customer".equals(userType)) {
-            // Customer statistics
             String username = (String) session.getAttribute("user");
             List<CourierDetails> userCouriers = courierdetailRepository.findByFromName(username);
             
@@ -454,7 +408,6 @@ public class CourierController {
             
             return "customerStatistics";
         } else if ("staff".equals(userType)) {
-            // Staff statistics
             String location = (String) session.getAttribute("location");
             List<CourierDetails> locationCouriers = courierdetailRepository.findByPickupCity(location);
             
@@ -495,13 +448,11 @@ public class CourierController {
         
         if ("customer".equals(userType)) {
             List<CourierDetails> recentCouriers = courierdetailRepository.findByFromName(username);
-            // Get last 5 bookings
             if (recentCouriers.size() > 5) {
                 recentCouriers = recentCouriers.subList(0, 5);
             }
             model.addAttribute("recentActivity", recentCouriers);
         } else if ("admin".equals(userType)) {
-            // Get all recent couriers for admin
             List<CourierDetails> allCouriers = courierdetailRepository.findAll();
             if (allCouriers.size() > 10) {
                 allCouriers = allCouriers.subList(0, 10);

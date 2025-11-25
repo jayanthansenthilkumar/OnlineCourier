@@ -1,4 +1,3 @@
-
 package com.example.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +12,7 @@ public class CustomerService {
     public boolean validateCusLogin(String password, String username) {
         username = username.trim();
         password = password.trim();
-
-        Customer customer = customerRepository.findByPassword(password);
-
-        System.out.println(username);
-        System.out.println(password);
-        return customer != null;
+        Customer customer = customerRepository.findById(username).orElse(null);
+        return customer != null && customer.getPassword().equals(password);
     }
 }

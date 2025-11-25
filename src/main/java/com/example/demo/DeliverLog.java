@@ -1,25 +1,21 @@
 package com.example.demo;
 
 import jakarta.persistence.Entity;
-
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-//entity classes annotated with JPA annotations(@Entity) that will map to your database tables.
 @Entity
 public class DeliverLog {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increments primary key values(ex:1,2,3...), doesnt
-                                                        // create sequence table unlike GenerationType.AUTO
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String trackingNumber;
     private String toName;
     private String destinationAddress;
     private String destinationCity;
 
-    // Constructors
     public DeliverLog() {
     }
 
@@ -30,7 +26,6 @@ public class DeliverLog {
         this.destinationCity = destinationCity;
     }
 
-    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -71,7 +66,6 @@ public class DeliverLog {
         this.destinationCity = destinationCity;
     }
 
-    // toString method (optional)
     @Override
     public String toString() {
         return "DeliverLog{" +

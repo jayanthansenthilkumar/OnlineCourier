@@ -1,13 +1,11 @@
 package com.example.demo;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-@Entity // map below class to the respective table in the db
+@Entity
 public class CourierDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,9 +14,7 @@ public class CourierDetails {
     private String pickupCity;
     private String toName;
     private String fromName;
-    // @Column(name = "to_mobile_no") // Specify the column name explicitly
     private String toMobile;
-    // private String toMobileNo;
     private String destinationAddress;
     private String destinationCity;
     private String paymentMethod;
@@ -27,7 +23,6 @@ public class CourierDetails {
     private String trackingNumber;
     private String status;
 
-    // Constructors
     public CourierDetails() {
     }
 
@@ -48,7 +43,6 @@ public class CourierDetails {
         this.status = status;
     }
 
-    // Getters and setters
     public String getFromName() {
         return fromName;
     }

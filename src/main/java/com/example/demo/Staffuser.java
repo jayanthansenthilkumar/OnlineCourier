@@ -1,21 +1,18 @@
-
 package com.example.demo;
 
 public class Staffuser {
     private String name;
     private Long id;
-    // private String username;
+    private String username;
     private String password;
     private String location;
 
-    // Constructors, getters, and setters
     public Staffuser() {
-
     }
 
     public Staffuser(String name, String username, String password, String location) {
         this.name = name;
-        // this.username = username;
+        this.username = username;
         this.password = password;
         this.location = location;
     }
@@ -44,13 +41,13 @@ public class Staffuser {
         this.name = name;
     }
 
-    // public String getUsername() {
-    // return username;
-    // }
+    public String getUsername() {
+        return username;
+    }
 
-    // public void setUsername(String username) {
-    // this.username = username;
-    // }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public String getPassword() {
         return password;
